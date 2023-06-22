@@ -1,32 +1,22 @@
 name: sync up to codecommit
-
-on:
-  push:
-    tags-ignore:
-      - '*'
-    branches:
-      - '*'
-
+on: [push, pull_request]
 jobs:
-  sync:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: work around permission issue
-        run: git config --global --add safe.directory /github/workspace
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: AKIAQNPRQ7QQDGUH26DA
-          aws-secret-access-key: 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
-          aws-region: us-east-1
+    - name: Set safe directory
+      run: git config --global --add safe.directory /github/workspace
 
-      - name: Sync up to CodeCommit
-        uses: youyo/sync-up-to-codecommit-action@v1
-        with:
-          repository_name: test_repo_jaime
-          aws_region: us-east-1
+    - name: Run youyo/sync-up-to-codecommit-action
+      uses: youyo/sync-up-to-codecommit-action@v1
+      with:
+        repository_name: test_repo_jaime
+        aws_region: us-east-1
+      env:
+        AWS_DEFAULT_REGION: us-east-1
+        AWS_REGION: us-east-1
+        AWS_ACCESS_KEY_ID: AKIAQNPRQ7QQDGUH26DA
+        AWS_SECRET_ACCESS_KEY: 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
