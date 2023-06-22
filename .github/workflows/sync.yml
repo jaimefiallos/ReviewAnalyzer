@@ -1,30 +1,27 @@
 name: sync up to codecommit
-
-on:
-  push:
-    tags-ignore:
-      - '*'
-    branches:
-      - '*'
-
+on: [push, pull_request]
 jobs:
-  sync:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: AKIAQNPRQ7QQDGUH26DA
-          aws-secret-access-key: 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
-          aws-region: us-east-1
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: AKIAQNPRQ7QQDGUH26DA
+        aws-secret-access-key: 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
+        aws-region: us-east-1
 
-      - name: Sync up to CodeCommit
-        uses: youyo/sync-up-to-codecommit-action@v1
-        with:
-          repository_name: test_repo_jaime
-          aws_region: us-east-1
+    - name: Sync with AWS CodeCommit
+      run: |
+        RepositoryName=test_repo_jaime
+        AwsRegion=us-east-1
+        CodeCommitUrl=https://git-codecommit.us-east-1.amazonaws.com/v1/repos/test_repo_jaime
+
+        git config --global credential.'https://git-codecommit.*.amazonaws.com'.helper '!aws codecommit credential-helper $@'
+        git config --global credential.UseHttpPath true
+        git config --global --add safe.directory "*"
+        git remote add sync ${CodeCommitUrl}
+        git push sync --mirror
