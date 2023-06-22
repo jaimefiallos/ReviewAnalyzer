@@ -1,24 +1,30 @@
-name: Your Workflow Name
-on: [push, pull_request]
+name: sync up to codecommit
+
+on:
+  push:
+    tags-ignore:
+      - '*'
+    branches:
+      - '*'
+
 jobs:
-  build:
+  sync:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-    - name: Adjust permissions and Set safe directory
-      run: |
-        sudo chown -R $(whoami) $GITHUB_WORKSPACE
-        git config --global --add safe.directory $GITHUB_WORKSPACE
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
-    - name: Run youyo/sync-up-to-codecommit-action
-      uses: youyo/sync-up-to-codecommit-action@v1
-      with:
-        repository_name: test_repo_jaime
-        aws_region: us-east-1
-      env:
-        AWS_DEFAULT_REGION: us-east-1
-        AWS_REGION: us-east-1
-        AWS_ACCESS_KEY_ID: AKIAQNPRQ7QQDGUH26DA
-        AWS_SECRET_ACCESS_KEY: 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
+      - name: Sync up to CodeCommit
+        uses: youyo/sync-up-to-codecommit-action@v1
+        with:
+          repository_name: test_repo_jaime
+          aws_region: us-east-1
