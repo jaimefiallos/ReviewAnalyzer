@@ -1,4 +1,4 @@
-name: sync up to codecommit
+name: Your Workflow Name
 on: [push, pull_request]
 jobs:
   build:
@@ -7,8 +7,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set safe directory
-      run: git config --global --add safe.directory /github/workspace
+    - name: Adjust permissions and Set safe directory
+      run: |
+        sudo chown -R $(whoami) /github/workspace
+        git config --global --add safe.directory /github/workspace
 
     - name: Run youyo/sync-up-to-codecommit-action
       uses: youyo/sync-up-to-codecommit-action@v1
