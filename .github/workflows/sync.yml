@@ -9,8 +9,8 @@ jobs:
 
     - name: Adjust permissions and Set safe directory
       run: |
-        sudo chown -R $(whoami) /github/workspace
-        git config --global --add safe.directory /github/workspace
+        sudo chown -R $(whoami) $GITHUB_WORKSPACE
+        git config --global --add safe.directory $GITHUB_WORKSPACE
 
     - name: Run youyo/sync-up-to-codecommit-action
       uses: youyo/sync-up-to-codecommit-action@v1
