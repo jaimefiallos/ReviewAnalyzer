@@ -23,5 +23,5 @@ jobs:
         git config --global credential.'https://git-codecommit.*.amazonaws.com'.helper '!aws codecommit credential-helper $@'
         git config --global credential.UseHttpPath true
         git config --global --add safe.directory "*"
-        git remote add sync ${CodeCommitUrl}
-        git push sync --mirror
+        git remote add codecommit ${CodeCommitUrl}
+        git push codecommit --mirror
