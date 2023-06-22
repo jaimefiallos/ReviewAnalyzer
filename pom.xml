@@ -20,7 +20,7 @@
 		<dependency>
 		    <groupId>junit</groupId>
 		    <artifactId>junit-dep</artifactId>
-		    <version>9.0.0</version>
+		    <version>10.0.0</version>
 		    <scope>test</scope>
 		</dependency>
 		<dependency>
